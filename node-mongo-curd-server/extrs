@@ -1,0 +1,46 @@
+const express = require('express');
+
+const { MongoClient } = require('mongodb');
+const app = express();
+const port = 5000;
+///user : mydbuser1
+//pass:XHb7BhCKafVbDz4U
+
+const uri = "mongodb+srv://mydbuser1:XHb7BhCKafVbDz4U@cluster0.yhxur.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+/*client.connect(err => {
+    const collection = client.db("foodMaster").collection("users");
+    // perform actions on the collection object
+    console.log('Hitting the data base');
+    const user = { name: 'opu', email: 'opu@gamil.com', phone: 'o1111111933' };
+    collection.insertOne(user)
+        .then(() => {
+            console.log('insert sucess');
+        })
+    // client.close();
+});*/
+async function run() {
+    try {
+        await client.connect();
+        const database = client.db("foodMaster");
+        const haiku = database.collection("users");
+        // create a document to insert
+        const doc = {
+            name: "special one",
+            email: "special@gmai.com"
+            // content: "No bytes, no problem. Just insert a document, in MongoDB",
+        }
+        const result = await haiku.insertOne(doc);
+        console.log(`A document was inserted with the _id: ${result.insertedId}`);
+    } finally {
+        await client.close();
+    }
+}
+run().catch(console.dir);
+
+app.get('/', (req, res) => {
+    res.send('a')
+});
+app.listen(port, () => {
+    console.log('alkd')
+})
